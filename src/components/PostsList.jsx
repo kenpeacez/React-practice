@@ -1,11 +1,23 @@
 import classes from "./PostsList.module.css";
 import NewPost from "./NewPost";
 import Modal from "./Modal";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Post from "./Post";
 
 function PostsList({ isPosting, onStopPosting }) {
   const [posts, setPost] = useState([]);
+
+  //useEffect(() => {}, []) , Accepts 2 arguments, a function and an array, remember to import useEffect from react
+  async function fetchPosts() {
+    const response = await fetch("http://localhost:8080/posts");
+    const resData = await response.json();
+    setPost(resData.posts);
+  }
+
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
 
   function addPostHandler(postData) {
     //backend API
