@@ -14,10 +14,32 @@ function PostsList({ isPosting, onStopPosting }) {
 
   async function fetchPosts() {
     setIsLoading(true);
-    const response = await fetch("http://localhost:8080/posts");
-    const resData = await response.json();
-    setPost(resData.posts);
-    setIsLoading(false);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    try {
+      const response = await fetch("http://localhost:8080/posts", {
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        alert("Failed to fetch posts");
+        setIsLoading(false);
+        return;
+      }
+
+      const resData = await response.json();
+      setPost(resData.posts);
+    } catch (error) {
+      if (error.name === "AbortError") {
+        alert("Request timed out");
+      } else {
+        alert("An error occurred while fetching posts");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   useEffect(() => {
