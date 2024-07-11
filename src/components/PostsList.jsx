@@ -1,15 +1,18 @@
 import classes from "./PostsList.module.css";
 import { useState, useEffect } from "react";
 import Post from "./Post";
+import { useLoaderData } from "react-router-dom";
 
 function PostsList() {
+  const posts = useLoaderData();
+  /* @@Disabled codes for useState, and uses loader() instead.
   const [posts, setPost] = useState([]);
   //loading handler
   const [isLoading, setIsLoading] = useState(false);
-
+*/
   //useEffect(() => {}, []) , Accepts 2 arguments, a function and an array, remember to import useEffect from react
   //useEffect(<function>, <dependency>)
-
+/* @@Disabled codes for useState, and uses loader() instead.
   async function fetchPosts() {
     setIsLoading(true);
     const controller = new AbortController();
@@ -44,6 +47,8 @@ function PostsList() {
     fetchPosts();
   }, []);
 
+  */
+
   function addPostHandler(postData) {
     //backend API
 
@@ -58,6 +63,7 @@ function PostsList() {
   }
 
   return (
+    /*
     <>
       {!isLoading && posts.length > 0 && (
         <ul className={classes.posts}>
@@ -77,6 +83,23 @@ function PostsList() {
           <p>Loading posts...</p>
         </div>
       )}
+    </>
+    */
+    <>
+      { posts.length > 0 && (
+        <ul className={classes.posts}>
+          {posts.map((post) => (
+            <Post key={post.body} author={post.author} body={post.body} />
+          ))}
+        </ul>
+      )}
+      {posts.length === 0 && (
+        <div style={{ textAlign: "center", color: "white" }}>
+          <h2>There are no posts yet.</h2>
+          <p>Start adding some posts.</p>
+        </div>
+      )}
+
     </>
   );
 }
